@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../style/styles.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>House Rental</title>
+  </head>
+
+  <body>
+    <div class="all flex flex-col h-screen">
+      <nav class="bg-white py-6 text-black">
+        <div class="navbar flex justify-between w-[80%] m-auto">
+          <div class="logo"><a href="index.html">Home Rentals</a></div>
+          <div class="nav-items flex gap-6">
+            <span>home</span>
+            <span>about</span>
+            <span>policy</span>
+            <span>contact</span>
+          </div>
+          <div id="login-status" class="login">
+            <span id="login-s"><a href="login.html">login</a></span>
+          </div>
+        </div>
+      </nav>
+      <div class="container flex-grow m-auto">
+        <div class="filters mb-[100px]">
+          <select class="px-4" id="houseType">
+            <option value="">House Type</option>
+            <option value="1 BHK">1 BHK</option>
+            <option value="2 BHK">2 BHK</option>
+            <option value="3 BHK">3 BHK</option>
+            <option value="1 RK">1 RK</option>
+          </select>
+          <select id="sortPrice">
+            <option value="">Sort by Price</option>
+            <option value="low-high">Low to High</option>
+            <option value="high-low">High to Low</option>
+          </select>
+          <select id="location">
+            <option value="">Location</option>
+            <option value="Delhi">Delhi</option>
+            <option value="Mumbai">Mumbai</option>
+            <option value="Bangalore">Bangalore</option>
+            <option value="Pune">Pune</option>
+          </select>
+          <select id="rooms">
+            <option value="">Rooms</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+          </select>
+          <select id="washrooms">
+            <option value="">Washrooms</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+          </select>
+          <button
+            class="px-10 bg-gray-300 text-black rounded-md hover:bg-gray-400"
+            id="filterBtn"
+          >
+            Filter
+          </button>
+        </div>
+        <div class="house-list w-[80%] m-auto">
+          <!-- House items will be displayed here -->
+          <div
+            id="show-house"
+            class="main-body grid grid-cols-3 gap-4 justify-center align-center m-auto"
+          ></div>
+        </div>
+        <div class="pagination">
+          <button class="disabled:text-gray-500" id="prevPage">Previous</button>
+          <span id="pageNumber">1</span>
+          <button class="disabled:text-gray-500" id="nextPage">Next</button>
+        </div>
+      </div>
+      <footer>
+        <div
+          class="bg-gray-800 h-[50px] text-white justify-evenly flex items-center"
+        >
+          <span class="h-fit">services</span>
+          <span class="h-fit">help</span>
+          <span class="h-fit">contact</span>
+          <span class="h-fit">about</span>
+        </div>
+      </footer>
+    </div>
+    <script src="../js/main.js"></script>
+  </body>
+</html>

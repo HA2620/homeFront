@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rounded Table with Tailwind CSS</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .modal {
+        display: none;
+      }
+      .modal.active {
+        display: flex;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100">
+    <div class="container mx-auto p-4">
+      <div class="flex justify-between items-center mb-4">
+        <h1 class="text-2xl font-bold">Data Table</h1>
+        <button id="addButton" class="bg-gray-800 text-white px-4 py-2 rounded">
+          + Add
+        </button>
+      </div>
+      <table class="min-w-full bg-white rounded-lg shadow-md overflow-hidden">
+        <thead class="bg-gray-800 text-white">
+          <tr>
+            <th class="py-2 px-4 text-left">Name</th>
+            <th class="py-2 px-4 text-left">Type</th>
+            <th class="py-2 px-4 text-left">Room</th>
+            <th class="py-2 px-4 text-left">Location</th>
+            <th class="py-2 px-4 text-left">Action</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <!-- More rows can be added dynamically -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Modal -->
+    <div
+      id="modal"
+      class="modal fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+    >
+      <div class="bg-white rounded-lg p-8 shadow-lg w-1/3">
+        <h2 id="modalTitle" class="text-xl font-bold mb-4">Add New Data</h2>
+        <form id="dataForm">
+          <input type="hidden" id="formMode" name="formMode" value="add" />
+          <div class="mb-4">
+            <label for="name" class="block text-sm font-medium text-gray-700"
+              >Name</label
+            >
+            <input
+              type="text"
+              id="name"
+              name="name"
+              class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+            />
+          </div>
+          <div class="mb-4">
+            <label for="desc" class="block text-sm font-medium text-gray-700"
+              >Description</label
+            >
+            <input
+              type="text"
+              id="description"
+              name="description"
+              class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+            />
+          </div>
+          <div class="mb-4">
+            <label for="price" class="block text-sm font-medium text-gray-700"
+              >Price</label
+            >
+            <input
+              type="number"
+              id="price"
+              name="price"
+              class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+            />
+          </div>
+          <div class="mb-4">
+            <label for="type" class="block text-sm font-medium text-gray-700"
+              >Type</label
+            >
+            <input
+              type="text"
+              id="type"
+              name="type"
+              class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+            />
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700"
+              >Neighborhoods</label
+            >
+            <div id="neighborhoods">
+              <!-- Neighborhood inputs will go here -->
+            </div>
+            <button
+              type="button"
+              id="addNeighborhood"
+              class="mt-2 bg-gray-300 text-black border border-black px-4 py-2 rounded"
+            >
+              Add Neighborhood
+            </button>
+          </div>
+          <div class="mb-4">
+            <label for="room" class="block text-sm font-medium text-gray-700"
+              >Room nos</label
+            >
+            <input
+              type="text"
+              id="room"
+              name="room"
+              class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+            />
+          </div>
+          <div class="mb-4">
+            <label
+              for="washroom"
+              class="block text-sm font-medium text-gray-700"
+              >Washroom nos</label
+            >
+            <input
+              type="number"
+              id="washroom"
+              name="washroom"
+              class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+            />
+          </div>
+          <div class="mb-4">
+            <label
+              for="location"
+              class="block text-sm font-medium text-gray-700"
+              >Location</label
+            >
+            <input
+              type="text"
+              id="location"
+              name="location"
+              class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+            />
+          </div>
+          <div class="mb-4">
+            <label for="picUrl" class="block text-sm font-medium text-gray-700"
+              >Photo Url</label
+            >
+            <input
+              type="text"
+              id="picUrl"
+              name="picUrl"
+              class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+            />
+          </div>
+
+          <div class="flex justify-end">
+            <button
+              type="button"
+              id="cancelButton"
+              class="bg-gray-500 text-white px-4 py-2 rounded mr-2"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="bg-blue-500 text-white px-4 py-2 rounded"
+            >
+              Submit
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', async () => {
+        const fetchPropertyBasedOnAdmins = async () => {
+          const urlParams = new URLSearchParams(window.location.search)
+          const sellerId = urlParams.get('id')
+          const res = await fetch(
+            `http://localhost:5001/api/houses?id=${sellerId}`
+          )
+          const data = await res.json()
+          console.log('data = ', data)
+
+          data.forEach(prop => {
+            let nbr = []
+            prop.neighbourhood.forEach(nbrhd => {
+              nbr.push({
+                name: nbrhd.name,
+                type: nbrhd.type,
+                dist: nbrhd.dist
+              })
+            })
+
+            console.log('prop = ', prop.neighbourhood)
+
+            document.getElementById(
+              'tableBody'
+            ).innerHTML += `<tr class="border-b">
+            <td class="py-2 px-4">${prop.name}</td>
+            <td class="py-2 px-4">${prop.type}</td>
+            <td class="py-2 px-4">${prop.noOfRoom}</td>
+            <td class="py-2 px-4">${prop.location}</td>
+            <td class="py-2 px-4">
+              <button
+                class="editButton bg-blue-500 text-white px-2 py-1 rounded mr-2"
+                data-name="${prop.name}"
+                data-description="${prop.description}"
+                data-type="${prop.type}"
+                data-price="${prop.price}"
+                data-room="${prop.noOfRoom}"
+                data-washroom="${prop.noOfWashroom}"
+                data-location="${prop.location}"
+                data-picUrl="${prop.picUrl}"
+                data-neighbourhood='${JSON.stringify(nbr)}'
+              >
+                Edit
+              </button>
+              <button onClick="deleteProperty('${
+                prop._id
+              }')" class="deleteButton-${
+              prop._id
+            } bg-red-500 text-white px-2 py-1 rounded">
+                Delete
+              </button>
+            </td>
+          </tr>`
+          })
+        }
+        fetchPropertyBasedOnAdmins()
+      })
+      document
+        .getElementById('addButton')
+        .addEventListener('click', function () {
+          document.getElementById('modalTitle').innerText = 'Add New Data'
+          document.getElementById('dataForm').reset()
+          document.getElementById('formMode').value = 'add'
+          document.getElementById('modal').classList.add('active')
+        })
+
+      document
+        .getElementById('tableBody')
+        .addEventListener('click', function (event) {
+          if (event.target.classList.contains('editButton')) {
+            const name = event.target.getAttribute('data-name')
+            const type = event.target.getAttribute('data-type')
+            const room = event.target.getAttribute('data-room')
+            const location = event.target.getAttribute('data-location')
+            const price = event.target.getAttribute('data-price')
+            const washroom = event.target.getAttribute('data-washroom')
+            const neighbourhood =
+              event.target.getAttribute('data-neighbourhood')
+            const picUrl = event.target.getAttribute('data-picUrl')
+            const description = event.target.getAttribute('data-description')
+
+            document.getElementById('modalTitle').innerText = 'Edit Data'
+            document.getElementById('name').value = name
+            document.getElementById('type').value = type
+            document.getElementById('room').value = room
+            document.getElementById('location').value = location
+            document.getElementById('washroom').value = washroom
+            document.getElementById('price').value = price
+            document.getElementById('neighborhoods').value = neighbourhood
+            document.getElementById('picUrl').value = picUrl
+            document.getElementById('description').value = description
+
+            document.getElementById('formMode').value = 'edit'
+            document.getElementById('modal').classList.add('active')
+          }
+        })
+      let neighborhoodIndex = 0
+
+      document
+        .getElementById('cancelButton')
+        .addEventListener('click', function () {
+          document.getElementById('modal').classList.remove('active')
+        })
+
+      document
+        .getElementById('addNeighborhood')
+        .addEventListener('click', function () {
+          addNeighborhoodInput()
+        })
+
+      function addNeighborhoodInput(neighborhood = {}) {
+        const div = document.createElement('div')
+        div.classList.add('mb-4', 'neighborhood')
+        div.innerHTML = `
+                <label class="block text-sm  text-gray-500">Neighborhood - ${
+                  neighborhoodIndex + 1
+                }</label>
+                <div class="flex space-x-2">
+                    <input type="text" name="neighborhoods[${neighborhoodIndex}][name]" placeholder="Name" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" value="${
+          neighborhood.name || ''
+        }">
+                    <input type="text" name="neighborhoods[${neighborhoodIndex}][type]" placeholder="Type" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" value="${
+          neighborhood.type || ''
+        }">
+                    <input type="number" name="neighborhoods[${neighborhoodIndex}][dist]" placeholder="Distance" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" value="${
+          neighborhood.dist || ''
+        }">
+                </div>
+            `
+        document.getElementById('neighborhoods').appendChild(div)
+        neighborhoodIndex++
+      }
+
+      document
+        .getElementById('cancelButton')
+        .addEventListener('click', function () {
+          document.getElementById('modal').classList.remove('active')
+        })
+
+      document
+        .getElementById('dataForm')
+        .addEventListener('submit', async function (event) {
+          event.preventDefault()
+          const formData = new FormData(document.getElementById('dataForm'))
+          const form_data = Object.fromEntries(formData.entries())
+
+          form_data.neighborhoods = []
+          for (let i = 0; i < neighborhoodIndex; i++) {
+            if (formData.get(`neighborhoods[${i}][name]`) != '') {
+              form_data.neighborhoods.push({
+                name: formData.get(`neighborhoods[${i}][name]`),
+                type: formData.get(`neighborhoods[${i}][type]`),
+                distance: parseFloat(formData.get(`neighborhoods[${i}][dist]`))
+              })
+            }
+          }
+
+          const urlParams = new URLSearchParams(window.location.search)
+          const sellerId = urlParams.get('id')
+          const sellerName = urlParams.get('name')
+          const sellerEmail = urlParams.get('email')
+          const dataToSend = {
+            name: form_data.name,
+            description: form_data.description,
+            price: form_data.price,
+            seller: {
+              id: sellerId,
+              name: sellerName,
+              email: sellerEmail
+            },
+            neighbourhood: form_data.neighborhoods,
+            type: form_data.type,
+            noOfRoom: form_data.room,
+            noOfWashroom: form_data.washroom,
+            picUrl: form_data.picUrl,
+            location: form_data.location
+          }
+
+          console.log('data to send = ', dataToSend)
+          const formMode = document.getElementById('formMode').value
+          if (formMode == 'add') {
+            const res = await fetch('http://localhost:5001/api/houses', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(dataToSend)
+            })
+          }
+          window.location.reload()
+
+          console.log('hi - ', document.getElementById('formMode').value)
+          document.getElementById('modal').classList.remove('active')
+          // You can now send `data` to your backend or perform other actions
+        })
+
+      async function deleteProperty(id) {
+        const res = await fetch('http://localhost:5001/api/houses', {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ id: id })
+        })
+      }
+    </script>
+  </body>
+</html>

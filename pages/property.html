@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+
+    <title>Document</title>
+  </head>
+
+  <body>
+    <div class="all flex flex-col h-screen">
+      <nav class="bg-white py-6 text-black">
+        <div class="navbar flex justify-between w-[80%] m-auto">
+          <div class="logo"><a href="index.html">Home Rentals</a></div>
+          <div class="nav-items flex gap-6">
+            <span>home</span>
+            <span>about</span>
+            <span>policy</span>
+            <span>contact</span>
+          </div>
+          <div id="login-status" class="login">
+            <span id="login-s"><a href="login.html">login</a></span>
+          </div>
+        </div>
+      </nav>
+      <div class="cont flex-grow">
+        <div
+          id="property-details"
+          class="flex main-box gap-4 align-middle justify-center p-10"
+        ></div>
+      </div>
+    </div>
+    <footer>
+      <div
+        class="bg-gray-800 h-[50px] text-white justify-evenly flex items-center"
+      >
+        <span class="h-fit">services</span>
+        <span class="h-fit">help</span>
+        <span class="h-fit">contact</span>
+        <span class="h-fit">about</span>
+      </div>
+    </footer>
+  </body>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const urlParams = new URLSearchParams(window.location.search)
+      const propId = urlParams.get('id')
+      const res = await fetch(`http://localhost:5001/api/houses/${propId}`)
+      const indieProp = await res.json()
+
+      const neighbourhood = indieProp.neighbourhood
+
+      document.getElementById(
+        'property-details'
+      ).innerHTML += `<div class="img w-[48%]">
+          <img 
+            src="${indieProp.picUrl}"
+            alt=""
+          />
+        </div>
+        <div class="details w-[48%] p-3 rounded-lg bg-blue-100">
+          <div class="text-4xl text-black font-bold mb-3">${indieProp.name}</div>
+          <div class="text-xl text-gray-700 text-black mb-3">
+            ${indieProp.description}
+          </div>
+          <div
+            style="display: none"
+            id="admin-details"
+            class="border border-black p-2 mb-3 rounded-md"
+          >
+            <div class="para text-2xl text-black font-semibold ">
+              Owner contact details
+            </div>
+            <div class="text-xl name">Name : ${indieProp.seller.name}</div>
+            <div class="text-xl name">Email : ${indieProp.seller.email}</div>
+            <div class="text-md text-gray-400 info">
+              You and ${indieProp.seller.name} both would have recived an email with each other
+              contact details
+            </div>
+          </div>
+          <div class="neighbourhood mb-3 ">
+            <div class="neighbourhood-det">
+              <div class="para text-2xl text-black mb-4">
+                Important neighborhood
+              </div>
+            </div>
+            <div id="allNeighbour" class="allNeighbour flex flex-wrap gap-3">
+
+            </div>
+          </div>
+          <div class="flat-details">
+            <div class="noOfRoom">Room : ${indieProp.noOfRoom}</div>
+            <div class="noOfRoom">Washroom : ${indieProp.noOfWashroom}</div>
+            <div class="noOfRoom">Type : ${indieProp.type}</div>
+            <div class="noOfRoom">Location : ${indieProp.location}</div>
+          </div>
+
+          <div class="buttons-and-all flex gap-6 align-middle mt-4">
+            <button
+              onclick="showAdminDetails()"
+              class="bg-gray-900 text-gray-100 px-6 rounded-md text-lg py-2 hover:bg-gray-200 hover:text-black hover:border-black hover:border"
+            >
+              CONTACT
+            </button>
+            <div class="flex">
+              <button onclick="onRed()" id="like-btn">
+                <i class="ri-heart-3-line text-5xl hover:text-red-700"></i>
+              </button>
+              <div id="like-text" class="text-xl">2</div>
+            </div>
+          </div>
+        </div>
+      `
+      neighbourhood.forEach(neighbour => {
+        document.getElementById(
+          'allNeighbour'
+        ).innerHTML += `<div class="nieghbour-det-for-each bg-gray-300 border-gray-800 rounded-xl p-2">
+                <div>${neighbour.name}</div>
+                <div>${neighbour.type}</div>
+                <div>${neighbour.distance} km away</div>
+        </div>`
+      })
+    })
+
+    if (localStorage.getItem('token')) {
+      document.getElementById(
+        'login-status'
+      ).innerHTML = `<span id="login-s"><button onclick='onLogoutClicked()'>logout</button></span>`
+    }
+
+    function onLogoutClicked() {
+      window.localStorage.removeItem('token')
+      window.location.href = 'index.html'
+    }
+    let count = 2
+    function showAdminDetails() {
+      if (!localStorage.getItem('token')) window.location.href = 'login.html'
+      else document.getElementById('admin-details').style.display = 'block'
+    }
+    function onRed() {
+      count += 1
+
+      const likeBtn = document.getElementById('like-btn')
+      const likeText = document.getElementById('like-text')
+      if (count % 2 != 0) {
+        likeBtn.innerHTML = `<i class="ri-heart-3-fill text-5xl text-red-700"></i>`
+        likeText.innerText = 3
+      } else {
+        likeBtn.innerHTML = `<i class="ri-heart-3-line text-5xl hover:text-red-700"></i>`
+        likeText.innerText = 2
+      }
+    }
+  </script>
+</html>
