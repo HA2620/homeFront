@@ -1,24 +1,25 @@
 {
     "rewrites": [
-        {
-            "source": "/",
-            "destination": "/pages/index.html"
-        },
-        {
-            "source": "login",
-            "destination": "/pages/login.html"
-        },
-        {
-            "source": "/signup",
-            "destination": "/pages/signup.html"
-        },
-        {
-            "source": "/admin",
-            "destination": "/pages/admin.html"
-        },
-        {
-            "source": "/property",
-            "destination": "/pages/property.html"
-        }
+      { "source": "/", "destination": "/pages/index.html" },
+      { "source": "/login", "destination": "/pages/login.html" },
+      { "source": "/signup", "destination": "/pages/signup.html" },
+      { "source": "/admin", "destination": "/pages/admin.html" },
+      { "source": "/property", "destination": "/pages/property.html" }
+    ],
+    "static": {
+      "public": "./",
+      "include": ["js/*", "style/*"]
+    },
+    "headers": [
+      {
+        "source": "/(.*)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=0, must-revalidate"
+          }
+        ]
+      }
     ]
-}
+  }
+  
