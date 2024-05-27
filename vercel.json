@@ -5,7 +5,7 @@
             "destination": "/pages/index.html"
         },
         {
-            "source": "/login",
+            "source": "login",
             "destination": "/pages/login.html"
         },
         {
