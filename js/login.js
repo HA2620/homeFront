@@ -6,7 +6,7 @@ document.getElementById('loginForm').addEventListener('submit', async e => {
 
   console.log('reache here 1234')
 
-  const res = await fetch('http://localhost:5001/api/users/login', {
+  const res = await fetch('https://homeback-p3lp.onrender.com/api/users/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'

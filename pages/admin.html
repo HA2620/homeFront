@@ -183,7 +183,7 @@
           const urlParams = new URLSearchParams(window.location.search)
           const sellerId = urlParams.get('id')
           const res = await fetch(
-            `http://localhost:5001/api/houses?id=${sellerId}`
+            `https://homeback-p3lp.onrender.com/api/houses?id=${sellerId}`
           )
           const data = await res.json()
           console.log('data = ', data)
@@ -359,7 +359,7 @@
           console.log('data to send = ', dataToSend)
           const formMode = document.getElementById('formMode').value
           if (formMode == 'add') {
-            const res = await fetch('http://localhost:5001/api/houses', {
+            const res = await fetch('https://homeback-p3lp.onrender.com/api/houses', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json'
@@ -375,7 +375,7 @@
         })
 
       async function deleteProperty(id) {
-        const res = await fetch('http://localhost:5001/api/houses', {
+        const res = await fetch('https://homeback-p3lp.onrender.com/api/houses', {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json'

@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const numWashrooms = washrooms.value
 
     const res = await fetch(
-      `http://localhost:5001/api/houses?type=${type}&priceSort=${priceSort}&loc=${loc}&rooms=${numRooms}&washrooms=${numWashrooms}`
+      `https://homeback-p3lp.onrender.com/api/houses?type=${type}&priceSort=${priceSort}&loc=${loc}&rooms=${numRooms}&washrooms=${numWashrooms}`
     )
     const data = await res.json()
 

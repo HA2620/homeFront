@@ -50,7 +50,7 @@
     document.addEventListener('DOMContentLoaded', async () => {
       const urlParams = new URLSearchParams(window.location.search)
       const propId = urlParams.get('id')
-      const res = await fetch(`http://localhost:5001/api/houses/${propId}`)
+      const res = await fetch(`https://homeback-p3lp.onrender.com/api/houses/${propId}`)
       const indieProp = await res.json()
 
       const neighbourhood = indieProp.neighbourhood

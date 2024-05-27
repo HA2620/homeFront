@@ -8,7 +8,7 @@ document.getElementById('signupForm').addEventListener('submit', async e => {
 
   console.log({ isSeller, name, email, password })
 
-    const res = await fetch('http://localhost:5001/api/users/register', {
+    const res = await fetch('https://homeback-p3lp.onrender.com/api/users/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
